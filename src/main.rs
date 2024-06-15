@@ -1,7 +1,10 @@
 mod scanner;
 
 use clap::{Arg, Command};
-use scanner::{cargo_audit_scanner::CargoAuditScanner, clippy_scanner::ClippyScanner, Scanner};
+use scanner::{
+    cargo_audit_scanner::CargoAuditScanner, clippy_scanner::ClippyScanner,
+    cargo_sbom_scanner::CargoSbomScanner, Scanner,
+};
 use serde_json::Value;
 
 fn main() {
@@ -13,7 +16,7 @@ fn main() {
             Arg::new("scan")
                 .short('s')
                 .long("scan")
-                .value_parser(["cargo-audit", "clippy"])
+                .value_parser(["cargo-audit", "clippy", "cargo-sbom"])
                 .default_value("cargo-audit")
                 .help("Run a security scan using the specified tool"),
         )
@@ -22,6 +25,7 @@ fn main() {
     let scan_tool = matches.get_one::<String>("scan").map(String::as_str).unwrap_or("cargo-audit");
     let scanner: Box<dyn Scanner> = match scan_tool {
         "clippy" => Box::new(ClippyScanner),
+        "cargo-sbom" => Box::new(CargoSbomScanner),
         _ => Box::new(CargoAuditScanner),
     };
 
