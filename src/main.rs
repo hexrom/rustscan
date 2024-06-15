@@ -1,7 +1,7 @@
 mod scanner;
 
 use clap::{Arg, Command};
-use scanner::{cargo_audit_scanner::CargoAuditScanner, Scanner};
+use scanner::{cargo_audit_scanner::CargoAuditScanner, clippy_scanner::ClippyScanner, Scanner};
 use serde_json::Value;
 
 fn main() {
@@ -13,21 +13,29 @@ fn main() {
             Arg::new("scan")
                 .short('s')
                 .long("scan")
-                .action(clap::ArgAction::SetTrue)
-                .help("Run a security scan"),
+                .value_parser(["cargo-audit", "clippy"])
+                .default_value("cargo-audit")
+                .help("Run a security scan using the specified tool"),
         )
         .get_matches();
 
-    if matches.get_flag("scan") {
-        let scanner = CargoAuditScanner;
-        match scanner.run_scan() {
-            Ok(result) => {
+    let scan_tool = matches.get_one::<String>("scan").map(String::as_str).unwrap_or("cargo-audit");
+    let scanner: Box<dyn Scanner> = match scan_tool {
+        "clippy" => Box::new(ClippyScanner),
+        _ => Box::new(CargoAuditScanner),
+    };
+
+    match scanner.run_scan() {
+        Ok(result) => {
+            if scan_tool == "cargo-audit" {
                 let parsed: Value = serde_json::from_str(&result.vulnerabilities).unwrap();
                 println!("Scan Results:\n");
                 print_vulnerabilities(&parsed);
+            } else {
+                println!("Scan Results:\n{}", result.vulnerabilities);
             }
-            Err(e) => eprintln!("Error running scan: {}", e),
         }
+        Err(e) => eprintln!("Error running scan: {}", e),
     }
 }
 
@@ -56,3 +64,5 @@ fn print_vulnerabilities(v: &Value) {
         println!("No vulnerabilities found.");
     }
 }
+
+

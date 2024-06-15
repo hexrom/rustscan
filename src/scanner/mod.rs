@@ -1,4 +1,5 @@
 pub mod cargo_audit_scanner;
+pub mod clippy_scanner;
 
 use serde::{Deserialize, Serialize};
 use std::error::Error;
