@@ -10,7 +10,7 @@ use serde_json::Value;
 fn main() {
     let matches = Command::new("RustScan")
         .version("1.0")
-        .author("Your Name <your.email@example.com>")
+        .author("0xRom")
         .about("Scans a Rust project for vulnerabilities")
         .arg(
             Arg::new("scan")
