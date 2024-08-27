@@ -4,7 +4,7 @@ Rust security ccanner aggregator. Use RustScan to scan your Rust project for sec
 // Build tool  
 `cargo build --release`
 
-// Scan Rust project (while in project directory)
+// Scan Rust project (while in project directory)  
 `rustscan --scan cargo-audit`  
 `rustscan --scan clippy`  
 `rustscan --scan cargo-sbom`  
