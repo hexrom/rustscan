@@ -1,5 +1,5 @@
 # RustScan
-Rust security ccanner aggregator. Use RustScan to scan your Rust project for security vulnerabilities using a number of tools, think of it as a Rust security scan swiss army knife. 
+Rust security scanner aggregator written in Rust for improved speed. Use RustScan to scan your Rust project for security vulnerabilities using a number of tools, think of it as a Rust security scan swiss army knife. 
 
 // Build tool  
 `cargo build --release`
